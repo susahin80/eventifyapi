@@ -64,7 +64,9 @@ namespace Eventify.Controllers
         public async Task<ActionResult<ReadEventResource>> Get(Guid id)
         {
 
-            var eventEntity = await UnitOfWork.Events.GetWithRelated(id, e => e.Category, e => e.Host, e => e.Attendances);
+            var eventEntity = await UnitOfWork.Events.GetEventWithAttenders(id);
+
+            if (eventEntity == null) throw new RestError(HttpStatusCode.NotFound, new { Event = "Event not found." });
 
             var result = Mapper.Map<Event, ReadEventResource>(eventEntity);
 

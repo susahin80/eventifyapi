@@ -21,7 +21,7 @@ namespace Eventify.Controllers
     {
 
         [HttpPost("{id}")]
-        public async Task<ActionResult<ReadAttendanceResource>> Attend(Guid id)
+        public async Task<ActionResult> Attend(Guid id)
         {
 
             Event eventEntity = await UnitOfWork.Events.GetWithRelated(id, e => e.Category, e => e.Attendances);
@@ -78,16 +78,12 @@ namespace Eventify.Controllers
 
             await UnitOfWork.CompleteAsync();
 
-            attendance = await UnitOfWork.Attendances.SingleOrDefault(a => a.AttendeeId == attendanceId && a.EventId == eventEntity.Id);
-
-            ReadAttendanceResource response = Mapper.Map<Attendance, ReadAttendanceResource>(attendance);
-
-            return Ok(response);
+            return Ok();
         }
 
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ReadAttendanceResource>> Unattend(Guid id)
+        public async Task<ActionResult> Unattend(Guid id)
         {
 
             Event eventEntity = await UnitOfWork.Events.GetWithRelated(id);

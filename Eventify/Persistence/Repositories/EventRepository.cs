@@ -12,7 +12,7 @@ using Eventify.Core;
 
 namespace Eventify.Persistence.Repositories
 {
-    public class EventRepository: Repository<Event>, IEventRepository
+    public class EventRepository : Repository<Event>, IEventRepository
     {
         public EventRepository(EventifyDbContext context) : base(context)
         {
@@ -25,7 +25,7 @@ namespace Eventify.Persistence.Repositories
         }
 
         public async Task<QueryResult<Event>> GetEvents(EventQuery filter)
-        {          
+        {
             var query = EventifyDbContext.Events.Include(e => e.Host).Include(e => e.Category).AsQueryable();
 
             //apply filter
@@ -46,6 +46,17 @@ namespace Eventify.Persistence.Repositories
             return result;
 
         }
+
+        public async Task<Event> GetEventWithAttenders(Guid id)
+        {
+            return await EventifyDbContext.Events
+                 .Include(e => e.Category)
+                 .Include(e => e.Host)
+                 .Include(e => e.Attendances)
+                 .ThenInclude(a => a.Attendee)
+                 .SingleOrDefaultAsync(e => e.Id == id);
+        }
+
 
         //public async Task<Event> GetEventWithHostAttendances(int id)
         //{

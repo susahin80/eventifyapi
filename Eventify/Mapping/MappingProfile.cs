@@ -22,11 +22,13 @@ namespace Eventify.Mapping
 
             CreateMap<Event, ReadEventResource>()
                     .ForMember(e => e.Category, opt => opt.MapFrom(c => c.Category.Name))
-                    .ForMember(e => e.Host, opt => opt.MapFrom(v => v.Host.Username));
+                    .ForMember(e => e.Host, opt => opt.MapFrom(v => v.Host.Username))
+                    .ForMember(e => e.Attendees, opt => opt.MapFrom(v => v.Attendances));
 
             CreateMap<Attendance, ReadAttendanceResource>()
                 .ForMember(e => e.JoinedDate, opt => opt.MapFrom(v => v.CreatedAt))
-                .ForMember(e => e.Event, opt => opt.MapFrom(v => v.Event));
+                .ForMember(e => e.UserId, opt => opt.MapFrom(v => v.Attendee.Id))
+                .ForMember(e => e.Username, opt => opt.MapFrom(v => v.Attendee.Username));
 
 
             CreateMap<FilterEventResource, EventQuery>();

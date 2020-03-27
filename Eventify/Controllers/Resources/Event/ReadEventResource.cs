@@ -1,7 +1,9 @@
-﻿using Eventify.Core.Domain;
+﻿using Eventify.Controllers.Resources.Attendance;
+using Eventify.Core.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Eventify.Controllers.Resources.Event
@@ -35,6 +37,9 @@ namespace Eventify.Controllers.Resources.Event
         public int? MaxAgeLimit { get; set; }
 
         public bool IsActive { get; set; }
+
+      //  [JsonPropertyName("attendees")]
+        public ICollection<ReadAttendanceResource> Attendees { get; set; }
 
 
     }

@@ -8,9 +8,9 @@ namespace Eventify.Controllers.Resources.Attendance
 {
     public class ReadAttendanceResource
     {
+        public Guid UserId { get; set; }
 
-
-        public ReadEventResource Event { get; set; }
+        public string Username { get; set; }
 
         public DateTime JoinedDate { get; set; }
     }

@@ -26,5 +26,7 @@ namespace Eventify.Core.Repositories
         void Remove(TEntity entity);
 
         void RemoveRange(IEnumerable<TEntity> entities);
+
+
     }
 }
