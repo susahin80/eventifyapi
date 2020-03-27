@@ -1,4 +1,5 @@
 ﻿using Eventify.Controllers.Resources.Attendance;
+using Eventify.Controllers.Resources.User;
 using Eventify.Core.Domain;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Eventify.Controllers.Resources.Event
     {
         public Guid Id { get; set; }
 
-        public string Host { get; set; }
+        public ReadMinUserResource Host { get; set; }
 
         public string Title { get; set; }
 
@@ -20,7 +21,7 @@ namespace Eventify.Controllers.Resources.Event
 
         public string PlaceName { get; set; }
 
-        public string Category { get; set; }
+        public CategoryReadResource Category { get; set; }
 
         public DateTime StartDate { get; set; }
 
@@ -38,7 +39,6 @@ namespace Eventify.Controllers.Resources.Event
 
         public bool IsActive { get; set; }
 
-      //  [JsonPropertyName("attendees")]
         public ICollection<ReadAttendanceResource> Attendees { get; set; }
 
 
