@@ -19,7 +19,9 @@ namespace Eventify.Controllers.Resources.Event
 
         public DateTime StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public int DurationInHours { get; set; }
+
+      //  public DateTime EndDate { get; set; }
 
         public decimal? Price { get; set; }
 

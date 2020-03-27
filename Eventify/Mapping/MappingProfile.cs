@@ -17,7 +17,9 @@ namespace Eventify.Mapping
         {
             CreateMap<CreateUserResource, User>();
             CreateMap<User, ReadUserResource>();
-            CreateMap<CreateEventResource, Event>();
+            CreateMap<CreateEventResource, Event>()
+                .ForMember(e => e.EndDate, opt => opt.MapFrom(c => c.StartDate.AddHours(c.DurationInHours)));
+
             CreateMap<Event, ReadEventResource>()
                     .ForMember(e => e.Category, opt => opt.MapFrom(c => c.Category.Name))
                     .ForMember(e => e.Host, opt => opt.MapFrom(v => v.Host.Username));
