@@ -11,6 +11,8 @@ namespace Eventify.Core.Repositories
     {
         Task<QueryResult<Event>> GetEvents(EventQuery filter);
 
+        Task<IEnumerable<Event>> GetEventsWithoutSortingAndPaging(EventQuery filter);
+
         Task<Event> GetEventWithAttenders(Guid id);
 
     }

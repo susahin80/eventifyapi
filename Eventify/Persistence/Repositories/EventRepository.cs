@@ -36,6 +36,7 @@ namespace Eventify.Persistence.Repositories
 
             var totalItems = await query.CountAsync();
 
+
             //apply paging
             query = query.ApplyPaging(filter);
 
@@ -47,6 +48,17 @@ namespace Eventify.Persistence.Repositories
 
         }
 
+        public async Task<IEnumerable<Event>> GetEventsWithoutSortingAndPaging(EventQuery filter)
+        {
+            var query = EventifyDbContext.Events.AsQueryable();
+
+            query = query.ApplyFiltering(filter);
+
+            var result = await query.ToListAsync();
+
+            return result;
+        }
+
         public async Task<Event> GetEventWithAttenders(Guid id)
         {
             return await EventifyDbContext.Events
@@ -56,25 +68,6 @@ namespace Eventify.Persistence.Repositories
                  .ThenInclude(a => a.Attendee)
                  .SingleOrDefaultAsync(e => e.Id == id);
         }
-
-
-        //public async Task<Event> GetEventWithHostAttendances(int id)
-        //{
-
-        //    return await EventifyDbContext.Events
-        //         .Include(e => e.Attendances)
-        //         .Include(e => e.Host)
-        //         .SingleOrDefaultAsync(e => e.Id == id);
-        //}
-
-        //public async Task<Event> GetEventWithCategoryAndHost(int id)
-        //{
-        //    return await EventifyDbContext.Events
-        //        .Include(e => e.Category)
-        //        .Include(e => e.Host)
-        //        .SingleOrDefaultAsync(e => e.Id == id);
-
-        //}
 
 
     }

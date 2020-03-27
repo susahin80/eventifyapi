@@ -47,7 +47,7 @@ namespace Eventify.Extensions
 
             if (filter.EndDate.HasValue)
             {
-                query = query.Where(e => e.StartDate <= filter.EndDate.Value);
+                query = query.Where(e => e.EndDate <= filter.EndDate.Value);
             }
 
             return query;

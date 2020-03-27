@@ -14,6 +14,7 @@ using Eventify.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Eventify.Extensions;
 
 namespace Eventify.Controllers
 {
@@ -23,15 +24,32 @@ namespace Eventify.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ReadEventResource>> CreateEvent(CreateEventResource createEventResource)
+        public async Task<ActionResult<ReadEventResource>> CreateEvent(CreateEventResource resource)
         {
-            var category = await UnitOfWork.Categories.Get(createEventResource.CategoryId);
+
+            if (!(resource.StartDate >= DateTime.Now.AddDays(1))) throw new RestError(HttpStatusCode.BadRequest, new { StartDate = "Event start date can start from 1 day away." });
+
+            var category = await UnitOfWork.Categories.Get(resource.CategoryId);
 
             if (category == null) throw new RestError(HttpStatusCode.BadRequest, new { Category = "Category doesn't exist" });
 
             var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
-            Event eventEntity = Mapper.Map<CreateEventResource, Event>(createEventResource);
+            //check if host has any active events whose StartDate-EndDate conflicts
+
+            var hostEvents = await UnitOfWork.Events.GetEventsWithoutSortingAndPaging(new EventQuery() { HostId = Guid.Parse(userId), StartDate = DateTime.Now, IsActive = true });
+
+            foreach (var evt in hostEvents)
+            {
+                if (evt.StartDate.IsInRange(resource.StartDate, resource.StartDate.AddHours(resource.DurationInHours)) || 
+                    evt.EndDate.IsInRange(resource.StartDate, resource.StartDate.AddHours(resource.DurationInHours)))
+                {
+                    throw new RestError(HttpStatusCode.BadRequest, new { StartDate = $"Event conflict's with one of your active future events. {evt.Title}" });
+                }
+
+            }
+
+            Event eventEntity = Mapper.Map<CreateEventResource, Event>(resource);
 
             eventEntity.HostId = Guid.Parse(userId);
 
