@@ -38,8 +38,6 @@ namespace Eventify.Controllers
             UnitOfWork.Events.Add(eventEntity);
             await UnitOfWork.CompleteAsync();
 
-            //var createdEvent = await UnitOfWork.Events.Get(eventEntity.Id, new string[2] { "Category", "Host" });
-
             var createdEvent = await UnitOfWork.Events.GetWithRelated(eventEntity.Id, e => e.Host, e => e.Category);
 
             var response = Mapper.Map<Event, ReadEventResource>(createdEvent);
@@ -58,7 +56,20 @@ namespace Eventify.Controllers
             var result = Mapper.Map<QueryResult<Event>, QueryResultResource<ReadEventResource>>(events);
 
             return Ok(result);
-        
+
+        }
+
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReadEventResource>> Get(Guid id)
+        {
+
+            var eventEntity = await UnitOfWork.Events.GetWithRelated(id, e => e.Category, e => e.Host, e => e.Attendances);
+
+            var result = Mapper.Map<Event, ReadEventResource>(eventEntity);
+
+            return Ok(result);
+
         }
 
     }

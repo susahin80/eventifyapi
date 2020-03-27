@@ -22,7 +22,6 @@ namespace Eventify.Mapping
                     .ForMember(e => e.Category, opt => opt.MapFrom(c => c.Category.Name))
                     .ForMember(e => e.Host, opt => opt.MapFrom(v => v.Host.Username));
 
-            CreateMap<CreateAttendanceResource, Attendance>();
             CreateMap<Attendance, ReadAttendanceResource>()
                 .ForMember(e => e.JoinedDate, opt => opt.MapFrom(v => v.CreatedAt))
                 .ForMember(e => e.Event, opt => opt.MapFrom(v => v.Event));

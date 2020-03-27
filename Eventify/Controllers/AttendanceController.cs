@@ -20,11 +20,11 @@ namespace Eventify.Controllers
     public class AttendanceController : BaseController
     {
 
-        [HttpPost()]
-        public async Task<ActionResult<ReadAttendanceResource>> CreateEvent(CreateAttendanceResource resource)
+        [HttpPost("{id}")]
+        public async Task<ActionResult<ReadAttendanceResource>> Attend(Guid id)
         {
 
-            Event eventEntity = await UnitOfWork.Events.GetWithRelated(resource.EventId, e => e.Category, e => e.Attendances);
+            Event eventEntity = await UnitOfWork.Events.GetWithRelated(id, e => e.Category, e => e.Attendances);
             if (eventEntity == null) throw new RestError(HttpStatusCode.BadRequest, new { Event = "Event doesn't exist." });
 
             if (!eventEntity.IsActive) throw new RestError(HttpStatusCode.BadRequest, new { Event = "Event isn't active." });
@@ -48,7 +48,7 @@ namespace Eventify.Controllers
             {
                 int age = DateUtil.CalculateAge(user.BirthDate);
 
-                if (age < eventEntity.MinAgeLimit.Value) 
+                if (age < eventEntity.MinAgeLimit.Value)
                     throw new RestError(HttpStatusCode.BadRequest, new { Event = $"This event has minimum age limit {eventEntity.MinAgeLimit.Value}, and you are {age} years old." });
             }
 
@@ -68,8 +68,11 @@ namespace Eventify.Controllers
                     throw new RestError(HttpStatusCode.BadRequest, new { Event = $"This event has already {eventEntity.MaxNumberOfPeople.Value} people." });
             }
 
-            Attendance attendance = Mapper.Map<CreateAttendanceResource, Attendance>(resource);
-            attendance.AttendeeId = attendanceId;
+            Attendance attendance = new Attendance
+            {
+                AttendeeId = attendanceId,
+                EventId = id
+            };
 
             UnitOfWork.Attendances.Add(attendance);
 
@@ -80,6 +83,32 @@ namespace Eventify.Controllers
             ReadAttendanceResource response = Mapper.Map<Attendance, ReadAttendanceResource>(attendance);
 
             return Ok(response);
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ReadAttendanceResource>> Unattend(Guid id)
+        {
+
+            Event eventEntity = await UnitOfWork.Events.GetWithRelated(id);
+
+            if (eventEntity == null) throw new RestError(HttpStatusCode.BadRequest, new { Event = "Event doesn't exist." });
+
+            if (!eventEntity.IsActive) throw new RestError(HttpStatusCode.BadRequest, new { Event = "Event isn't active." });
+
+            if (DateTime.Now > eventEntity.StartDate) throw new RestError(HttpStatusCode.BadRequest, new { Event = "Too late to unattend this event. Event was in the past." });
+
+            Guid attendanceId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+
+            Attendance attendance = await UnitOfWork.Attendances.SingleOrDefault(a => a.AttendeeId == attendanceId && a.EventId == eventEntity.Id);
+
+            if (attendance == null) throw new RestError(HttpStatusCode.BadRequest, new { Event = "You didn't join this event." });
+
+             UnitOfWork.Attendances.Remove(attendance);
+
+            await UnitOfWork.CompleteAsync();
+
+            return NoContent();
         }
 
     }
