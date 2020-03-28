@@ -1,5 +1,6 @@
 ﻿using Eventify.Core.Domain;
 using Eventify.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,11 @@ namespace Eventify.Persistence.Repositories
         public EventifyDbContext EventifyDbContext
         {
             get { return Context as EventifyDbContext; }
+        }
+
+        public async Task<IEnumerable<Attendance>> GetUserAttendanceEvents(Guid userId)
+        {
+            return await EventifyDbContext.Attendances.Where(a => a.AttendeeId == userId).Include(a => a.Event).ToListAsync();
         }
     }
 }

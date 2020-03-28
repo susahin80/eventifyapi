@@ -33,25 +33,37 @@ namespace Eventify.Controllers
 
             if (category == null) throw new RestError(HttpStatusCode.BadRequest, new { Category = "Category doesn't exist" });
 
-            var userId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
             //check if host has any active events whose StartDate-EndDate conflicts
 
-            var hostEvents = await UnitOfWork.Events.GetEventsWithoutSortingAndPaging(new EventQuery() { HostId = Guid.Parse(userId), StartDate = DateTime.Now, IsActive = true });
+            var hostEvents = await UnitOfWork.Events.GetEventsWithoutSortingAndPaging(new EventQuery() { HostId = userId, StartDate = DateTime.Now, IsActive = true });
 
             foreach (var evt in hostEvents)
             {
-                if (evt.StartDate.IsInRange(resource.StartDate, resource.StartDate.AddHours(resource.DurationInHours)) || 
-                    evt.EndDate.IsInRange(resource.StartDate, resource.StartDate.AddHours(resource.DurationInHours)))
+                if (resource.StartDate.IsInRange(evt.StartDate, evt.EndDate) ||
+                    resource.StartDate.AddHours(resource.DurationInHours).IsInRange(evt.StartDate, evt.EndDate))
                 {
-                    throw new RestError(HttpStatusCode.BadRequest, new { StartDate = $"Event conflict's with one of your active future events. {evt.Title}" });
+                    throw new RestError(HttpStatusCode.BadRequest, new { StartDate = $"Event conflict's with one of your active future events: {evt.Title}" });
                 }
+            }
 
+            //check if user joined another event 
+
+            var attendances = await UnitOfWork.Attendances.GetUserAttendanceEvents(userId);
+
+            foreach (var att in attendances)
+            {
+                if (resource.StartDate.IsInRange(att.Event.StartDate, att.Event.EndDate) ||
+                  resource.StartDate.AddHours(resource.DurationInHours).IsInRange(att.Event.StartDate, att.Event.EndDate))
+                {
+                    throw new RestError(HttpStatusCode.BadRequest, new { StartDate = $"You already joined at an event at that time: {att.Event.Title}" });
+                }
             }
 
             Event eventEntity = Mapper.Map<CreateEventResource, Event>(resource);
 
-            eventEntity.HostId = Guid.Parse(userId);
+            eventEntity.HostId = userId;
 
             UnitOfWork.Events.Add(eventEntity);
             await UnitOfWork.CompleteAsync();
