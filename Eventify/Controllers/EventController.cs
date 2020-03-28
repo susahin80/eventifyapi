@@ -104,5 +104,32 @@ namespace Eventify.Controllers
 
         }
 
+
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<ActionResult<ReadEventResource>> Update(Guid id, CreateEventResource resource)
+        {
+
+            var eventEntity = await UnitOfWork.Events.GetEventWithAttenders(id);
+
+            if (eventEntity == null) throw new RestError(HttpStatusCode.NotFound, new { Event = "Event not found." });
+
+            var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+
+            if (eventEntity.HostId != userId) throw new RestError(HttpStatusCode.NotFound, new { Event = "Event not found." });
+
+            if (eventEntity.Attendances.Count() > 0) throw new RestError(HttpStatusCode.NotFound, new { Event = "You can't update an event which has attenders." });
+
+            Mapper.Map<CreateEventResource, Event>(resource, eventEntity);
+
+            await UnitOfWork.CompleteAsync();
+
+            eventEntity.Id = id;
+
+            var result = Mapper.Map<Event, ReadEventResource>(eventEntity);
+
+            return Ok(result);
+
+        }
     }
 }

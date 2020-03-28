@@ -21,7 +21,7 @@ namespace Eventify.Persistence.Repositories
 
         public async Task<IEnumerable<Attendance>> GetUserAttendanceEvents(Guid userId)
         {
-            return await EventifyDbContext.Attendances.Where(a => a.AttendeeId == userId).Include(a => a.Event).ToListAsync();
+            return await EventifyDbContext.Attendances.Where(a => a.AttendeeId == userId && a.Event.IsActive).Include(a => a.Event).ToListAsync();
         }
     }
 }
