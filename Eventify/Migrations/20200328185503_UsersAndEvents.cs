@@ -25,7 +25,7 @@ namespace Eventify.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2020, 3, 26, 21, 11, 5, 635, DateTimeKind.Local).AddTicks(5257)),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     Username = table.Column<string>(maxLength: 20, nullable: false),
                     Email = table.Column<string>(maxLength: 100, nullable: false),
                     Password = table.Column<string>(maxLength: 200, nullable: false),
@@ -45,7 +45,7 @@ namespace Eventify.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2020, 3, 26, 21, 11, 5, 623, DateTimeKind.Local).AddTicks(1111)),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     HostId = table.Column<Guid>(nullable: false),
                     Title = table.Column<string>(maxLength: 30, nullable: false),
                     Description = table.Column<string>(maxLength: 500, nullable: false),
@@ -81,7 +81,7 @@ namespace Eventify.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2020, 3, 26, 21, 11, 5, 641, DateTimeKind.Local).AddTicks(6315)),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     AttendeeId = table.Column<Guid>(nullable: false),
                     EventId = table.Column<Guid>(nullable: false)
                 },

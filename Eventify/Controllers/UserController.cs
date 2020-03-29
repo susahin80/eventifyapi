@@ -6,6 +6,7 @@ using Eventify.Core.Repositories;
 using Eventify.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -37,6 +38,7 @@ namespace Eventify.Controllers
 
             user = Mapper.Map<CreateUserResource, User>(userResource);
             user.Password = Hasher<User>.Hash(user, user.Password);
+            user.CreatedAt = DateTime.Now;
 
             UnitOfWork.Users.Add(user);
             await UnitOfWork.CompleteAsync();

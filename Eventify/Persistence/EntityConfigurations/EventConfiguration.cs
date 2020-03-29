@@ -27,8 +27,6 @@ namespace Eventify.Persistence.Configurations
 
             builder.Property(e => e.EndDate).IsRequired();
 
-            builder.Property(a => a.CreatedAt).IsRequired().HasDefaultValue(DateTime.Now);
-
             builder.HasOne(e => e.Category).WithMany(c => c.Events).HasForeignKey(e => e.CategoryId);
 
         }

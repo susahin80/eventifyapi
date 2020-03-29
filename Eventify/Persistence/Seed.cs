@@ -12,10 +12,10 @@ namespace Eventify.Persistence
         public static async Task SeedData(EventifyDbContext context)
         {
 
-            var sportsGuid = Guid.NewGuid();
-            var musicsGuid = Guid.NewGuid();
-            var foodsGuid = Guid.NewGuid();
-            var danceGuid = Guid.NewGuid();
+            var sportsGuid = new Guid("54e9a687-0c6b-4f99-8372-2b74f76295e1");
+            var musicsGuid = new Guid("fc9b7f4e-8450-4321-976e-b95f0909dc22");
+            var foodsGuid = new Guid("3e8916aa-68aa-4dad-a758-1992ed0cd620");
+            var danceGuid = new Guid("b6640704-ae79-4f0b-a98a-5ae67d3cfaac");
 
             if (!context.Categories.Any())
             {
@@ -25,22 +25,26 @@ namespace Eventify.Persistence
                     new Category
                     {
                         Id = sportsGuid,
-                        Name = "Sports"
+                        Name = "Sports",
+                        CreatedAt = DateTime.Now
                     },
                        new Category
                     {
                        Id = musicsGuid,
-                        Name = "Music"
+                        Name = "Music",
+                        CreatedAt = DateTime.Now
                     },
                           new Category
                     {
                         Id = foodsGuid,
-                        Name = "Food"
+                        Name = "Food",
+                        CreatedAt = DateTime.Now
                     },
                              new Category
                     {
                           Id = danceGuid,
-                        Name = "Dance"
+                        Name = "Dance",
+                        CreatedAt = DateTime.Now
                     },
                 };
 
@@ -59,6 +63,7 @@ namespace Eventify.Persistence
                         Password = Hasher<User>.Hash(null, "123123"),
                         Gender = "M",
                         BirthDate = new DateTime(2002, 03, 18),
+                        CreatedAt = DateTime.Now,
                         Events = new List<Event>
                         {
                             new Event
@@ -67,6 +72,7 @@ namespace Eventify.Persistence
                                 Description = "Tom's Chess Event Description...",
                                 PlaceName = "Club Gambit",
                                 CategoryId = sportsGuid,
+                                CreatedAt = DateTime.Now,
                                 StartDate = new DateTime(2020, 06, 15, 16, 0, 0),
                                 EndDate = new DateTime(2020, 06, 15, 20, 0, 0),
                                 IsActive = true,
@@ -77,6 +83,7 @@ namespace Eventify.Persistence
                                 Title = "Tom's Music Event",
                                 Description = "Tom's Music Event Description...",
                                 PlaceName = "Club Music",
+                                CreatedAt = DateTime.Now,
                                 CategoryId = musicsGuid,
                                 StartDate = new DateTime(2020, 06, 19, 21, 0, 0),
                                 EndDate = new DateTime(2020, 06, 19, 23, 0, 0),
@@ -88,6 +95,7 @@ namespace Eventify.Persistence
                                 Title = "Tom's Food Event",
                                 Description = "Tom's Food Event Description...",
                                 PlaceName = "Cook House",
+                                CreatedAt = DateTime.Now,
                                 CategoryId = foodsGuid,
                                 StartDate = new DateTime(2020, 06, 28, 16, 0, 0),
                                 EndDate = new DateTime(2020, 06, 28, 18, 0, 0),
@@ -99,6 +107,7 @@ namespace Eventify.Persistence
                                 Title = "Tom's Dance Event For 30s",
                                 Description = "Tom's Dance Event Description...",
                                 PlaceName = "Club Dance",
+                                CreatedAt = DateTime.Now,
                                 CategoryId = danceGuid,
                                 StartDate = new DateTime(2020, 07, 11, 22, 0, 0),
                                 EndDate = new DateTime(2020, 07, 12, 02, 0, 0),
@@ -115,6 +124,7 @@ namespace Eventify.Persistence
                         Password = Hasher<User>.Hash(null, "123123"),
                         Gender = "M",
                         BirthDate = new DateTime(1980, 09, 12),
+                        CreatedAt = DateTime.Now,
                         Events = new List<Event>
                         {
                             new Event
@@ -123,6 +133,7 @@ namespace Eventify.Persistence
                                 Description = "Bob's Football Event Description...",
                                 PlaceName = "Football Field",
                                 CategoryId = sportsGuid,
+                                CreatedAt = DateTime.Now,
                                 StartDate = new DateTime(2020, 06, 15, 16, 0, 0),
                                 EndDate = new DateTime(2020, 06, 15, 18, 0, 0),
                                 IsActive = true,
@@ -134,6 +145,7 @@ namespace Eventify.Persistence
                                 Description = "Bob's Music Event Description...",
                                 PlaceName = "Club Music",
                                 CategoryId = musicsGuid,
+                                CreatedAt = DateTime.Now,
                                 StartDate = new DateTime(2020, 06, 20, 19, 0, 0),
                                 EndDate = new DateTime(2020, 06, 20, 20, 0, 0),
                                 IsActive = true,
@@ -144,6 +156,7 @@ namespace Eventify.Persistence
                                 Description = "Bob's Food Event Description...",
                                 PlaceName = "Foody Max",
                                 CategoryId = foodsGuid,
+                                CreatedAt = DateTime.Now,
                                 StartDate = new DateTime(2020, 07, 02, 15, 0, 0),
                                 EndDate = new DateTime(2020, 07, 02, 16, 30, 0),
                                 IsActive = true,
@@ -157,6 +170,7 @@ namespace Eventify.Persistence
                         Password = Hasher<User>.Hash(null, "123123"),
                         Gender = "F",
                         BirthDate = new DateTime(1985, 07, 17),
+                        CreatedAt = DateTime.Now,
                         Events = new List<Event>
                         {
                             new Event
@@ -165,6 +179,7 @@ namespace Eventify.Persistence
                                 Description = "Mary's Music Event Description...",
                                 PlaceName = "At My Home",
                                 CategoryId = musicsGuid,
+                                CreatedAt = DateTime.Now,
                                 StartDate = new DateTime(2020, 06, 11, 19, 30, 0),
                                 EndDate = new DateTime(2020, 06, 11, 21, 30, 0),
                                 IsActive = true,
@@ -176,6 +191,7 @@ namespace Eventify.Persistence
                                 Description = "Mary's Dance Event Description...",
                                 PlaceName = "Dance Club",
                                 CategoryId = danceGuid,
+                                CreatedAt = DateTime.Now,
                                 StartDate = new DateTime(2020, 06, 18, 23, 0, 0),
                                 EndDate = new DateTime(2020, 06, 19, 01, 0, 0),
                                 Price = 50,

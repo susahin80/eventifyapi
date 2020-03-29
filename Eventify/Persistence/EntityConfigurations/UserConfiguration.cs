@@ -25,8 +25,6 @@ namespace Eventify.Persistence.Configurations
 
             builder.Property(u => u.BirthDate).IsRequired();
 
-            builder.Property(a => a.CreatedAt).IsRequired().HasDefaultValue(DateTime.Now);
-
             builder.HasMany(u => u.Events).WithOne(e => e.Host).HasForeignKey(e => e.HostId);
 
         }

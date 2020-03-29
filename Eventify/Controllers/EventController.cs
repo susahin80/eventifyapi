@@ -64,6 +64,7 @@ namespace Eventify.Controllers
             Event eventEntity = Mapper.Map<CreateEventResource, Event>(resource);
 
             eventEntity.HostId = userId;
+            eventEntity.CreatedAt = DateTime.Now;
 
             UnitOfWork.Events.Add(eventEntity);
             await UnitOfWork.CompleteAsync();
@@ -101,6 +102,14 @@ namespace Eventify.Controllers
             var result = Mapper.Map<Event, ReadEventResource>(eventEntity);
 
             return Ok(result);
+
+        }
+
+        [HttpGet("test")]
+        public  ActionResult<string> Test()
+        {
+
+            return Ok("test");
 
         }
 

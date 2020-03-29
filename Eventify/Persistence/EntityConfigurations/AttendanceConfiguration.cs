@@ -12,7 +12,6 @@ namespace Eventify.Persistence.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Attendance> builder)
         {
-            builder.Property(a => a.CreatedAt).IsRequired().HasDefaultValue(DateTime.Now);
 
             builder.HasKey(a => a.Id);
 

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eventify.Migrations
 {
     [DbContext(typeof(EventifyDbContext))]
-    [Migration("20200326181105_UsersAndEvents")]
+    [Migration("20200328185503_UsersAndEvents")]
     partial class UsersAndEvents
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,9 +31,7 @@ namespace Eventify.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2020, 3, 26, 21, 11, 5, 641, DateTimeKind.Local).AddTicks(6315));
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("EventId")
                         .HasColumnType("uniqueidentifier");
@@ -75,9 +73,7 @@ namespace Eventify.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2020, 3, 26, 21, 11, 5, 623, DateTimeKind.Local).AddTicks(1111));
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -137,9 +133,7 @@ namespace Eventify.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2020, 3, 26, 21, 11, 5, 635, DateTimeKind.Local).AddTicks(5257));
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
