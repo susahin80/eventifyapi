@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eventify.Migrations
 {
     [DbContext(typeof(EventifyDbContext))]
-    [Migration("20200329113845_UsersEventsAttendancesFollowers")]
+    [Migration("20200329124503_UsersEventsAttendancesFollowers")]
     partial class UsersEventsAttendancesFollowers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -228,13 +228,13 @@ namespace Eventify.Migrations
 
             modelBuilder.Entity("Eventify.Core.Domain.Following", b =>
                 {
-                    b.HasOne("Eventify.Core.Domain.User", "Follower")
+                    b.HasOne("Eventify.Core.Domain.User", "Followed")
                         .WithMany("Followers")
                         .HasForeignKey("FollowedId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Eventify.Core.Domain.User", "Followed")
+                    b.HasOne("Eventify.Core.Domain.User", "Follower")
                         .WithMany("Followings")
                         .HasForeignKey("FollowerId")
                         .OnDelete(DeleteBehavior.Restrict)

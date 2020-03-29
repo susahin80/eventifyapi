@@ -58,6 +58,7 @@ namespace Eventify.Persistence
                 {
                     new User
                     {
+                        Id = new Guid("08a7512a-5617-49a1-75e1-08d7d3d5cd2c"),
                         Username = "Tom",
                         Email = "tom@test.com",
                         Password = Hasher<User>.Hash(null, "123123"),
@@ -119,6 +120,7 @@ namespace Eventify.Persistence
                     },
                     new User
                     {
+                        Id = new Guid("bf62b492-fa97-4624-75e2-08d7d3d5cd2c"),
                         Username = "Bob",
                         Email = "bob@test.com",
                         Password = Hasher<User>.Hash(null, "123123"),
@@ -165,6 +167,7 @@ namespace Eventify.Persistence
                     },
                      new User
                     {
+                        Id = new Guid("266f1128-22e9-40e2-75e3-08d7d3d5cd2c"),
                         Username = "Mary",
                         Email = "mary@test.com",
                         Password = Hasher<User>.Hash(null, "123123"),

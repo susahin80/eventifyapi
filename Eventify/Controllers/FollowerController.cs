@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Eventify.Controllers.Resources.Follower;
 using Eventify.Core.Domain;
 using Eventify.Util;
 using Microsoft.AspNetCore.Authorization;
@@ -70,6 +71,29 @@ namespace Eventify.Controllers
             await UnitOfWork.CompleteAsync();
 
             return NoContent();
+        }
+
+
+        [HttpGet("{id}/followers")]
+        public async Task<ActionResult<User>> GetFollowers(Guid id)
+        {
+
+            IEnumerable<Following> followers = await UnitOfWork.Followers.FindWithRelated(f => f.FollowedId == id, f => f.Follower);
+
+            var result = Mapper.Map<IEnumerable<Following>, IEnumerable<ReadFollowerResource>>(followers);
+
+            return Ok(result);
+        }
+
+        [HttpGet("{id}/followings")]
+        public async Task<ActionResult<User>> GetFollowings(Guid id)
+        {
+
+            IEnumerable<Following> followers = await UnitOfWork.Followers.FindWithRelated(f => f.FollowerId == id, f => f.Followed);
+
+            var result = Mapper.Map<IEnumerable<Following>, IEnumerable<ReadFollowingResource>>(followers);
+
+            return Ok(result);
         }
     }
 }

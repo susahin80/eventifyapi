@@ -226,13 +226,13 @@ namespace Eventify.Migrations
 
             modelBuilder.Entity("Eventify.Core.Domain.Following", b =>
                 {
-                    b.HasOne("Eventify.Core.Domain.User", "Follower")
+                    b.HasOne("Eventify.Core.Domain.User", "Followed")
                         .WithMany("Followers")
                         .HasForeignKey("FollowedId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Eventify.Core.Domain.User", "Followed")
+                    b.HasOne("Eventify.Core.Domain.User", "Follower")
                         .WithMany("Followings")
                         .HasForeignKey("FollowerId")
                         .OnDelete(DeleteBehavior.Restrict)

@@ -54,11 +54,11 @@ namespace Eventify.Persistence.Repositories
             return await _entities.ToListAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllWithRelated(params Expression<Func<TEntity, object>>[] includes)
+        public async Task<IEnumerable<TEntity>> FindWithRelated(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
         {
             var query = includes
                     .Aggregate(
-                        _entities.AsQueryable(),
+                        _entities.Where(predicate).AsQueryable(),
                         (current, include) => current.Include(include)
                     );
 

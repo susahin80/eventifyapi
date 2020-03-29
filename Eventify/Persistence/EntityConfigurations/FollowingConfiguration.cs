@@ -15,8 +15,8 @@ namespace Eventify.Persistence.EntityConfigurations
 
             builder.HasKey(a => a.Id);
 
-            builder.HasOne(a => a.Follower).WithMany(u => u.Followers).HasForeignKey(u => u.FollowedId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(a => a.Followed).WithMany(u => u.Followings).HasForeignKey(u => u.FollowerId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(a => a.Follower).WithMany(u => u.Followings).HasForeignKey(u => u.FollowerId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(a => a.Followed).WithMany(u => u.Followers).HasForeignKey(u => u.FollowedId).OnDelete(DeleteBehavior.Restrict);
 
         }
     }

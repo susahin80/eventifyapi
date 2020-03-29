@@ -2,6 +2,7 @@
 using Eventify.Controllers.Resources;
 using Eventify.Controllers.Resources.Attendance;
 using Eventify.Controllers.Resources.Event;
+using Eventify.Controllers.Resources.Follower;
 using Eventify.Controllers.Resources.User;
 using Eventify.Core;
 using Eventify.Core.Domain;
@@ -38,6 +39,16 @@ namespace Eventify.Mapping
 
             CreateMap<FilterEventResource, EventQuery>();
             CreateMap<QueryResult<Event>, QueryResultResource<ReadEventResource>>();
+
+            CreateMap<Following, ReadFollowerResource>()
+                .ForMember(e => e.UserId, opt => opt.MapFrom(c => c.FollowerId))
+                .ForMember(e => e.Username, opt => opt.MapFrom(c => c.Follower.Username))
+                .ForMember(e => e.FollowedDate, opt => opt.MapFrom(c => c.CreatedAt));
+
+            CreateMap<Following, ReadFollowingResource>()
+           .ForMember(e => e.UserId, opt => opt.MapFrom(c => c.FollowedId))
+           .ForMember(e => e.Username, opt => opt.MapFrom(c => c.Followed.Username))
+           .ForMember(e => e.FollowedDate, opt => opt.MapFrom(c => c.CreatedAt));
         }
     }
 }
