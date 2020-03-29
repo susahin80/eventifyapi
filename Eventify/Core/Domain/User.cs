@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Eventify.Core.Domain
 {
-    public class User: Common
+    public class User : Common
     {
 
         public string Username { get; set; }
@@ -28,6 +28,10 @@ namespace Eventify.Core.Domain
         public ICollection<Event> Events { get; set; }
 
         public ICollection<Attendance> Attendances { get; set; }
+
+        public ICollection<Following> Followings { get; set; }
+
+        public ICollection<Following> Followers { get; set; }
 
     }
 }

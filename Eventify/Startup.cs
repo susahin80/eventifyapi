@@ -76,6 +76,7 @@ namespace Eventify
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IEventRepository, EventRepository>();
             services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+            services.AddScoped<IFollowerRepository, FollowerRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddAutoMapper(typeof(User));

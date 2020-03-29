@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Eventify.Migrations
 {
-    public partial class UsersAndEvents : Migration
+    public partial class UsersEventsAttendancesFollowers : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -77,6 +77,32 @@ namespace Eventify.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Followings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    FollowerId = table.Column<Guid>(nullable: false),
+                    FollowedId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Followings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Followings_Users_FollowedId",
+                        column: x => x.FollowedId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Followings_Users_FollowerId",
+                        column: x => x.FollowerId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Attendances",
                 columns: table => new
                 {
@@ -121,12 +147,25 @@ namespace Eventify.Migrations
                 name: "IX_Events_HostId",
                 table: "Events",
                 column: "HostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Followings_FollowedId",
+                table: "Followings",
+                column: "FollowedId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Followings_FollowerId",
+                table: "Followings",
+                column: "FollowerId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "Attendances");
+
+            migrationBuilder.DropTable(
+                name: "Followings");
 
             migrationBuilder.DropTable(
                 name: "Events");

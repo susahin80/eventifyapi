@@ -25,6 +25,8 @@ namespace Eventify.Persistence
 
         public DbSet<Category> Categories { get; set; }
 
+        public DbSet<Following> Followings { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -16,6 +16,8 @@ namespace Eventify.Core
 
         IAttendanceRepository Attendances { get; }
 
+        IFollowerRepository Followers { get; }
+
         Task CompleteAsync();
     }
 }

@@ -121,6 +121,30 @@ namespace Eventify.Migrations
                     b.ToTable("Events");
                 });
 
+            modelBuilder.Entity("Eventify.Core.Domain.Following", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FollowedId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FollowerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FollowedId");
+
+                    b.HasIndex("FollowerId");
+
+                    b.ToTable("Followings");
+                });
+
             modelBuilder.Entity("Eventify.Core.Domain.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -197,6 +221,21 @@ namespace Eventify.Migrations
                         .WithMany("Events")
                         .HasForeignKey("HostId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Eventify.Core.Domain.Following", b =>
+                {
+                    b.HasOne("Eventify.Core.Domain.User", "Follower")
+                        .WithMany("Followers")
+                        .HasForeignKey("FollowedId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Eventify.Core.Domain.User", "Followed")
+                        .WithMany("Followings")
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618
