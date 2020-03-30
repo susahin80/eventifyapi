@@ -49,6 +49,9 @@ namespace Eventify.Mapping
            .ForMember(e => e.UserId, opt => opt.MapFrom(c => c.FollowedId))
            .ForMember(e => e.Username, opt => opt.MapFrom(c => c.Followed.Username))
            .ForMember(e => e.FollowedDate, opt => opt.MapFrom(c => c.CreatedAt));
+
+
+            CreateMap<Photo, SetMainPhotoResponseResource>();
         }
     }
 }

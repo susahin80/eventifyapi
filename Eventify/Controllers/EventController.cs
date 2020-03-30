@@ -173,5 +173,74 @@ namespace Eventify.Controllers
 
             return Ok(response);
         }
+
+
+        [HttpPut("{eventId}/photo/{photoId}")]
+        [Authorize]
+        public async Task<ActionResult<SetMainPhotoResponseResource>> SetEventMainPhoto(Guid eventId, Guid photoId)
+        {
+            var evt = await UnitOfWork.Events.GetWithRelated(eventId, e => e.Photos);
+
+            if (evt == null) throw new RestError(HttpStatusCode.NotFound, new { Event = "Event not found" });
+
+            var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+
+            if (evt.HostId != userId) throw new RestError(HttpStatusCode.NotFound, new { Event = "Event not found..." });
+
+            Photo photo = evt.Photos.FirstOrDefault(p => p.Id == photoId);
+
+            if (photo == null) throw new RestError(HttpStatusCode.NotFound, new { Photo = "Not found" });
+
+            if (photo.IsMain) throw new RestError(HttpStatusCode.BadRequest, new { Photo = "Photo is already the main photo." });
+
+            photo.IsMain = true;
+
+            Photo currentMainPhoto = evt.Photos.FirstOrDefault(p => p.IsMain == true);
+
+            if (currentMainPhoto != null)
+            {
+                currentMainPhoto.IsMain = false;
+            }
+
+            await UnitOfWork.CompleteAsync();
+
+            var response = Mapper.Map<Photo, SetMainPhotoResponseResource>(photo);
+
+            return Ok(response);
+        }
+
+
+        [HttpDelete("{eventId}/photo/{photoId}")]
+        [Authorize]
+        public async Task<ActionResult> DeleteEventPhoto(Guid eventId, Guid photoId)
+        {
+            var evt = await UnitOfWork.Events.GetWithRelated(eventId, e => e.Photos);
+
+            if (evt == null) throw new RestError(HttpStatusCode.NotFound, new { Event = "Event not found" });
+
+            var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+
+            if (evt.HostId != userId) throw new RestError(HttpStatusCode.NotFound, new { Event = "Event not found..." });
+
+            Photo photo = evt.Photos.FirstOrDefault(p => p.Id == photoId);
+
+            if (photo == null) throw new RestError(HttpStatusCode.NotFound, new { Photo = "Photo not found" });
+            
+            if (photo.IsMain) throw new RestError(HttpStatusCode.BadRequest, new { Photo = "You can't delete the event's main photo" });
+
+            string result = PhotoAccessor.DeletePhoto(photo.PublicId);
+
+            if (result == "ok")
+            {
+                evt.Photos.Remove(photo); //only removes relation
+
+                await UnitOfWork.CompleteAsync();
+            } else
+            {
+                throw new Exception(result);
+            }
+
+            return NoContent();
+        }
     }
 }
