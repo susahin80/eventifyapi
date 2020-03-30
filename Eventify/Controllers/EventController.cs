@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Eventify.Extensions;
+using Eventify.Infrastructure.Photos;
 
 namespace Eventify.Controllers
 {
@@ -105,14 +106,6 @@ namespace Eventify.Controllers
 
         }
 
-        [HttpGet("test")]
-        public  ActionResult<string> Test()
-        {
-
-            return Ok("test");
-
-        }
-
 
         [HttpPut("{id}")]
         [Authorize]
@@ -139,6 +132,46 @@ namespace Eventify.Controllers
 
             return Ok(result);
 
+        }
+
+
+        [HttpPost("photo")]
+        [Authorize]
+        public async Task<ActionResult<AddEventPhotoResponseResource>> AddEventPhoto([FromForm]AddEventPhotoResource resource)
+        {
+            var evt = await UnitOfWork.Events.GetWithRelated(resource.EventId, e => e.Photos);
+
+            if (evt == null) throw new RestError(HttpStatusCode.NotFound, new { Event = "Event not found" });
+
+            var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+
+            if (evt.HostId != userId) throw new RestError(HttpStatusCode.NotFound, new { Event = "Event not found..." });
+
+            PhotoUploadResult result = PhotoAccessor.AddPhoto(resource.File);
+
+            bool isMain = !evt.Photos.Any(p => p.IsMain == true);
+
+            Photo photo = new Photo()
+            {
+                CreatedAt = DateTime.Now,
+                IsMain = isMain ,
+                PublicId = result.PublicId,
+                Url = result.Url                
+            };
+
+            evt.Photos.Add(photo);
+
+            await UnitOfWork.CompleteAsync();
+
+            var response = new AddEventPhotoResponseResource()
+            {
+                IsMain = isMain,
+                PublicId = photo.PublicId,
+                Url = photo.Url,
+                EventId = evt.Id                
+            };
+
+            return Ok(response);
         }
     }
 }

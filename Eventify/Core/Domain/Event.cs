@@ -49,6 +49,7 @@ namespace Eventify.Core.Domain
 
         public ICollection<Attendance> Attendances { get; set; }
 
+        public ICollection<Photo> Photos { get; set; }
 
     }
 }

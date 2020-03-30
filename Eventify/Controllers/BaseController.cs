@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Eventify.Core;
+using Eventify.Infrastructure.Photos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,9 +15,11 @@ namespace Eventify.Controllers
     [ApiController]
     public class BaseController : ControllerBase
     {
-           private IUnitOfWork _UnitOfWork;
+        private IUnitOfWork _UnitOfWork;
 
         private IMapper _Mapper;
+
+        private IPhotoAccessor _PhotoAccessor;
 
         protected IUnitOfWork UnitOfWork
         {
@@ -31,6 +34,14 @@ namespace Eventify.Controllers
             get
             {
                 return _Mapper ?? (_Mapper = HttpContext.RequestServices.GetService<IMapper>());
+            }
+        }
+
+        protected IPhotoAccessor PhotoAccessor
+        {
+            get
+            {
+                return _PhotoAccessor ?? (_PhotoAccessor = HttpContext.RequestServices.GetService<IPhotoAccessor>());
             }
         }
     }

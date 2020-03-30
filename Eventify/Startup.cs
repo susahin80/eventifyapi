@@ -24,6 +24,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Eventify.Infrastructure.Photos;
 
 namespace Eventify
 {
@@ -81,6 +82,8 @@ namespace Eventify
             services.AddScoped<IFollowerRepository, FollowerRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IJwtGenerator, JwtGenerator>();
+            services.Configure<CloudinarySettings>(Configuration.GetSection("Cloudinary"));
+            services.AddScoped<IPhotoAccessor, PhotoAccessor>();
             services.AddAutoMapper(typeof(User));
           
         }

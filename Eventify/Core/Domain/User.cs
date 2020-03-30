@@ -33,5 +33,7 @@ namespace Eventify.Core.Domain
 
         public ICollection<Following> Followers { get; set; }
 
+        public ICollection<Photo> Photos { get; set; }
+
     }
 }
