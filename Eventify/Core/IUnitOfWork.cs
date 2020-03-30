@@ -18,6 +18,8 @@ namespace Eventify.Core
 
         IFollowerRepository Followers { get; }
 
+        IPhotoRepository Photos { get; }
+
         Task CompleteAsync();
     }
 }

@@ -27,6 +27,8 @@ namespace Eventify.Persistence
 
         public DbSet<Following> Followings { get; set; }
 
+        public DbSet<Photo> Photos { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

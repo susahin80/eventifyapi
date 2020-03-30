@@ -20,6 +20,7 @@ namespace Eventify.Persistence
             Categories = new CategoryRepository(_context);
             Attendances = new AttendanceRepository(context);
             Followers = new FollowerRepository(context);
+            Photos = new PhotoRepository(context);
         }
 
         public IUserRepository Users { get; private set; }
@@ -31,6 +32,8 @@ namespace Eventify.Persistence
         public IAttendanceRepository Attendances { get; private set; }
 
         public IFollowerRepository Followers { get; private set; }
+
+        public IPhotoRepository Photos { get; private set; }
 
         public async Task  CompleteAsync()
         {

@@ -232,7 +232,9 @@ namespace Eventify.Controllers
 
             if (result == "ok")
             {
-                evt.Photos.Remove(photo); //only removes relation
+                // evt.Photos.Remove(photo); //only removes relation
+
+                UnitOfWork.Photos.Remove(photo);
 
                 await UnitOfWork.CompleteAsync();
             } else
