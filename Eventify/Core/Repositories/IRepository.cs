@@ -13,7 +13,7 @@ namespace Eventify.Core.Repositories
 
         Task<IEnumerable<TEntity>> GetAll();
 
-        Task<IEnumerable<TEntity>> FindWithRelated(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes);
+        Task<IEnumerable<TEntity>> FindWithRelated(Expression<Func<TEntity, bool>> predicate, string sortBy, bool isSortAscending = true, params Expression<Func<TEntity, object>>[] includes);
 
         Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate);
 

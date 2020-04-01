@@ -9,5 +9,7 @@ namespace Eventify.Core.Repositories
     public interface IAttendanceRepository : IRepository<Attendance>
     {
         Task<IEnumerable<Attendance>> GetUserAttendanceEvents(Guid userId);
+
+        Task<QueryResult<Attendance>> GetUserAttendances(Guid userId, EventQuery filter);
     }
 }

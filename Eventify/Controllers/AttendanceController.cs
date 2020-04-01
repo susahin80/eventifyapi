@@ -70,6 +70,7 @@ namespace Eventify.Controllers
 
             Attendance attendance = new Attendance
             {
+                CreatedAt = DateTime.Now,
                 AttendeeId = attendanceId,
                 EventId = id
             };

@@ -1,18 +1,19 @@
-﻿using AutoMapper;
-using Eventify.Controllers.Resources;
+﻿using Eventify.Controllers.Resources;
 using Eventify.Controllers.Resources.Event;
 using Eventify.Core;
 using Eventify.Core.Domain;
-using Eventify.Core.Repositories;
 using Eventify.Infrastructure.Photos;
 using Eventify.Util;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Eventify.Controllers.Resources.Attendance;
 
 namespace Eventify.Controllers
 {
@@ -77,7 +78,7 @@ namespace Eventify.Controllers
 
         [HttpPost("photo")]
         [Authorize]
-        public async Task<ActionResult<AddUserPhotoResponseResource>> AddEventPhoto([FromForm]AddUserPhotoResource resource)
+        public async Task<ActionResult<AddUserPhotoResponseResource>> AddUserPhoto([FromForm]AddUserPhotoResource resource)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
@@ -115,7 +116,7 @@ namespace Eventify.Controllers
 
         [HttpPut("photo/{photoId}")]
         [Authorize]
-        public async Task<ActionResult<SetMainPhotoResponseResource>> SetUserMainPhoto( Guid photoId)
+        public async Task<ActionResult<SetMainPhotoResponseResource>> SetUserMainPhoto(Guid photoId)
         {
             var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
@@ -179,6 +180,64 @@ namespace Eventify.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpGet("events")]
+        [Authorize]
+        public async Task<ActionResult<QueryResultResource<ReadEventResource>>> GetUserOwnEvents([FromQuery]FilterEventResource filter)
+        {
+
+            var eventQuery = Mapper.Map<FilterEventResource, EventQuery>(filter);
+
+            if (string.IsNullOrEmpty(eventQuery.SortBy))
+            {
+                Expression<Func<Event, DateTime>> sortingExpression = a => a.StartDate;
+                eventQuery.SortBy = PropertyUtil.GetFullPropertyName(sortingExpression);
+            }
+
+            Guid userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            eventQuery.HostId = userId;
+
+            QueryResult<Event> events = await UnitOfWork.Events.GetEvents(eventQuery,e => e.Category, e => e.Host);
+
+            var result = Mapper.Map<QueryResult<Event>, QueryResultResource<ReadEventResource>>(events);
+
+            return Ok(result);
+
+        }
+
+        [HttpGet("attending-events")]
+        [Authorize]
+        public async Task<ActionResult<QueryResultResource<ReadEventResource>>> GetUserAttendingEvents([FromQuery]FilterEventResource filter)
+        {
+            var userId = Guid.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+
+            var eventQuery = Mapper.Map<FilterEventResource, EventQuery>(filter);      
+
+            if (string.IsNullOrEmpty(eventQuery.SortBy))
+            {
+                Expression<Func<Attendance, DateTime>> sortingExpression = a => a.Event.StartDate;
+                eventQuery.SortBy = PropertyUtil.GetFullPropertyName(sortingExpression);
+            }
+
+            var attendances = await UnitOfWork.Attendances.GetUserAttendances(userId, eventQuery);
+
+            var result = Mapper.Map<QueryResult<Attendance>, QueryResultResource<ReadAttendanceEventResource>>(attendances);
+
+            return Ok(result);
+        }
+
+        private static string GetMemberName(Expression expression)
+        {
+            switch (expression.NodeType)
+            {
+                case ExpressionType.MemberAccess:
+                    return ((MemberExpression)expression).Member.Name;
+                case ExpressionType.Convert:
+                    return GetMemberName(((UnaryExpression)expression).Operand);
+                default:
+                    throw new NotSupportedException(expression.NodeType.ToString());
+            }
         }
     }
 }

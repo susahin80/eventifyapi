@@ -39,8 +39,6 @@ namespace Eventify.Controllers.Resources.Event
 
         public bool IsActive { get; set; }
 
-        public ICollection<ReadAttendanceResource> Attendees { get; set; }
-
 
     }
 }

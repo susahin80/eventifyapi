@@ -29,16 +29,26 @@ namespace Eventify.Mapping
 
             CreateMap<Event, ReadEventResource>()
                     .ForMember(e => e.Category, opt => opt.MapFrom(c => c.Category))
-                    .ForMember(e => e.Host, opt => opt.MapFrom(v => v.Host))
-                    .ForMember(e => e.Attendees, opt => opt.MapFrom(v => v.Attendances));
+                    .ForMember(e => e.Host, opt => opt.MapFrom(v => v.Host));
+
+            CreateMap<Event, ReadEventAttendancesResource>()
+                .ForMember(e => e.Category, opt => opt.MapFrom(c => c.Category))
+                .ForMember(e => e.Host, opt => opt.MapFrom(v => v.Host))
+                .ForMember(e => e.Attendees, opt => opt.MapFrom(v => v.Attendances));
 
             CreateMap<Attendance, ReadAttendanceResource>()
                 .ForMember(e => e.JoinedDate, opt => opt.MapFrom(v => v.CreatedAt))
                 .ForMember(e => e.UserId, opt => opt.MapFrom(v => v.Attendee.Id))
                 .ForMember(e => e.Username, opt => opt.MapFrom(v => v.Attendee.Username));
 
+            CreateMap<Attendance, ReadAttendanceEventResource>()
+                .ForMember(e => e.JoinedDate, opt => opt.MapFrom(v => v.CreatedAt))
+                .ForMember(e => e.Event, opt => opt.MapFrom(e => e.Event));
+
             CreateMap<FilterEventResource, EventQuery>();
             CreateMap<QueryResult<Event>, QueryResultResource<ReadEventResource>>();
+            CreateMap<QueryResult<Event>, QueryResultResource<ReadEventAttendancesResource>>();
+            CreateMap<QueryResult<Attendance>, QueryResultResource<ReadAttendanceEventResource>>();
 
             CreateMap<Following, ReadFollowerResource>()
                 .ForMember(e => e.UserId, opt => opt.MapFrom(c => c.FollowerId))
@@ -49,7 +59,6 @@ namespace Eventify.Mapping
            .ForMember(e => e.UserId, opt => opt.MapFrom(c => c.FollowedId))
            .ForMember(e => e.Username, opt => opt.MapFrom(c => c.Followed.Username))
            .ForMember(e => e.FollowedDate, opt => opt.MapFrom(c => c.CreatedAt));
-
 
             CreateMap<Photo, SetMainPhotoResponseResource>();
         }

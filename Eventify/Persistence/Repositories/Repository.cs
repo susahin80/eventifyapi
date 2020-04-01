@@ -1,5 +1,6 @@
 ﻿using Eventify.Core.Domain;
 using Eventify.Core.Repositories;
+using Eventify.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,6 @@ using System.Threading.Tasks;
 namespace Eventify.Persistence.Repositories
 {
 
-    //public class PrimaryFieldConstraint
-    //{
-    //    public int Id { get; set; }
-    //}
     public class Repository<TEntity> : IRepository<TEntity> where TEntity: Common
     {
         protected readonly EventifyDbContext Context;
@@ -54,7 +51,7 @@ namespace Eventify.Persistence.Repositories
             return await _entities.ToListAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> FindWithRelated(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
+        public async Task<IEnumerable<TEntity>> FindWithRelated(Expression<Func<TEntity, bool>> predicate, string sortBy, bool isSortAscending = true, params Expression<Func<TEntity, object>>[] includes )
         {
             var query = includes
                     .Aggregate(
@@ -62,19 +59,10 @@ namespace Eventify.Persistence.Repositories
                         (current, include) => current.Include(include)
                     );
 
+            query = query.ApplySorting(sortBy, isSortAscending);
+
             return await query.ToListAsync();
         }
-
-        //public async Task<IEnumerable<TEntity>> GetAllWithRelated2(params Expression<Func<TEntity, object>>[] includes)
-        //{
-        //    var query = includes
-        //            .Aggregate(
-        //                _entities.AsQueryable(),
-        //                (current, include) => current.Include(include)
-        //            );
-        //  //  query.asq
-        //    return query.as
-        //}
 
 
         public async Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate)
@@ -112,6 +100,7 @@ namespace Eventify.Persistence.Repositories
             _entities.RemoveRange(entities);
         }
 
-    
+
+
     }
 }

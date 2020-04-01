@@ -83,7 +83,7 @@ namespace Eventify.Controllers
 
             var eventQuery = Mapper.Map<FilterEventResource, EventQuery>(filter);
 
-            QueryResult<Event> events = await UnitOfWork.Events.GetEvents(eventQuery);
+            QueryResult<Event> events = await UnitOfWork.Events.GetEvents(eventQuery, e => e.Host, e => e.Category);
 
             var result = Mapper.Map<QueryResult<Event>, QueryResultResource<ReadEventResource>>(events);
 
@@ -100,7 +100,7 @@ namespace Eventify.Controllers
 
             if (eventEntity == null) throw new RestError(HttpStatusCode.NotFound, new { Event = "Event not found." });
 
-            var result = Mapper.Map<Event, ReadEventResource>(eventEntity);
+            var result = Mapper.Map<Event, ReadEventAttendancesResource>(eventEntity);
 
             return Ok(result);
 

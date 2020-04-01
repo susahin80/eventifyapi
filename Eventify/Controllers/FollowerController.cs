@@ -78,7 +78,7 @@ namespace Eventify.Controllers
         public async Task<ActionResult<User>> GetFollowers(Guid id)
         {
 
-            IEnumerable<Following> followers = await UnitOfWork.Followers.FindWithRelated(f => f.FollowedId == id, f => f.Follower);
+            IEnumerable<Following> followers = await UnitOfWork.Followers.FindWithRelated(f => f.FollowedId == id, null, false, f => f.Follower);
 
             var result = Mapper.Map<IEnumerable<Following>, IEnumerable<ReadFollowerResource>>(followers);
 
@@ -89,7 +89,7 @@ namespace Eventify.Controllers
         public async Task<ActionResult<User>> GetFollowings(Guid id)
         {
 
-            IEnumerable<Following> followers = await UnitOfWork.Followers.FindWithRelated(f => f.FollowerId == id, f => f.Followed);
+            IEnumerable<Following> followers = await UnitOfWork.Followers.FindWithRelated(f => f.FollowerId == id, null, false, f => f.Followed);
 
             var result = Mapper.Map<IEnumerable<Following>, IEnumerable<ReadFollowingResource>>(followers);
 

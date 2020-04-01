@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Eventify.Extensions
@@ -11,60 +12,32 @@ namespace Eventify.Extensions
     public static class IQueryableExtensions
     {
 
-        public static IQueryable<Event> ApplyFiltering(this IQueryable<Event> query, EventQuery filter)
-        {
-            if (filter.IsActive.HasValue)
-            {
-                query = query.Where(e => e.IsActive == filter.IsActive.Value);
-            }
-
-            if (filter.IsFree.HasValue)
-            {
-                if (filter.IsFree.Value)
-                {
-                    query = query.Where(e => !e.Price.HasValue);
-                }
-                else
-                {
-                    query = query.Where(e => e.Price.HasValue);
-                }
-            }
-
-            if (filter.CategoryId.HasValue)
-            {
-                query = query.Where(e => e.CategoryId == filter.CategoryId.Value);
-            }
-
-            if (filter.HostId.HasValue)
-            {
-                query = query.Where(e => e.HostId == filter.HostId.Value);
-            }
-
-            if (filter.StartDate.HasValue)
-            {
-                query = query.Where(e => e.StartDate >= filter.StartDate.Value);
-            }
-
-            if (filter.EndDate.HasValue)
-            {
-                query = query.Where(e => e.EndDate <= filter.EndDate.Value);
-            }
-
-            return query;
-        }
-
 
         //https://stackoverflow.com/a/40572006/11717458
-        public static IQueryable<T> ApplySorting<T>(this IQueryable<T> query, IQueryObject queryObj)
+        //public static IQueryable<T> ApplySorting<T>(this IQueryable<T> query, IQueryObject sort)
+        //{
+        //    if (sort == null || string.IsNullOrWhiteSpace(sort.SortBy))
+        //    {
+        //        return query;
+        //    }
+
+        //    var lambda = (dynamic)CreateExpression(typeof(T), sort.SortBy);
+
+        //    return sort.IsSortAscending
+        //        ? Queryable.OrderBy(query, lambda)
+        //        : Queryable.OrderByDescending(query, lambda);
+        //}
+
+        public static IQueryable<T> ApplySorting<T>(this IQueryable<T> query, string key, bool ascending = true)
         {
-            if (string.IsNullOrWhiteSpace(queryObj.SortBy))
+            if (string.IsNullOrWhiteSpace(key))
             {
                 return query;
             }
 
-            var lambda = (dynamic)CreateExpression(typeof(T), queryObj.SortBy);
+            var lambda = (dynamic)CreateExpression(typeof(T), key);
 
-            return queryObj.IsSortAscending
+            return ascending
                 ? Queryable.OrderBy(query, lambda)
                 : Queryable.OrderByDescending(query, lambda);
         }
@@ -82,15 +55,35 @@ namespace Eventify.Extensions
             return Expression.Lambda(body, param);
         }
 
-        public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, IQueryObject queryObj)
+
+        public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, int? page, int? pageSize)
         {
-            if (queryObj.Page <= 0)
-                queryObj.Page = 1;
+            int calculatedPage = 1;
+            int calculatedPageSize = 10;
 
-            if (queryObj.PageSize <= 0)
-                queryObj.PageSize = 10;
+            if (page.HasValue)
+            {
+                calculatedPage = page.Value < 1 ? 1 : page.Value;
+            }
 
-            return query.Skip((queryObj.Page - 1) * queryObj.PageSize).Take(queryObj.PageSize);
+            if (pageSize.HasValue)
+            {
+                calculatedPageSize = pageSize.Value < 1 ? 10 : pageSize.Value;
+            }
+
+
+            return query.Skip((calculatedPage - 1) * calculatedPageSize).Take(calculatedPageSize);
         }
+
+        //public static IQueryable<T> ApplyPaging<T>(this IQueryable<T> query, IQueryObject queryObj)
+        //{
+        //    if (queryObj.Page <= 0)
+        //        queryObj.Page = 1;
+
+        //    if (queryObj.PageSize <= 0)
+        //        queryObj.PageSize = 10;
+
+        //    return query.Skip((queryObj.Page - 1) * queryObj.PageSize).Take(queryObj.PageSize);
+        //}
     }
 }
