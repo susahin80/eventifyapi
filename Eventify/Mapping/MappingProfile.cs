@@ -3,6 +3,7 @@ using Eventify.Controllers.Resources;
 using Eventify.Controllers.Resources.Attendance;
 using Eventify.Controllers.Resources.Event;
 using Eventify.Controllers.Resources.Follower;
+using Eventify.Controllers.Resources.Profile;
 using Eventify.Controllers.Resources.User;
 using Eventify.Core;
 using Eventify.Core.Domain;
@@ -61,6 +62,8 @@ namespace Eventify.Mapping
            .ForMember(e => e.FollowedDate, opt => opt.MapFrom(c => c.CreatedAt));
 
             CreateMap<Photo, SetMainPhotoResponseResource>();
+
+            CreateMap<Photo, PhotoResource>();
         }
     }
 }

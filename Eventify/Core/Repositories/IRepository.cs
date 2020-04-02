@@ -19,6 +19,8 @@ namespace Eventify.Core.Repositories
 
         Task<TEntity> SingleOrDefault(Expression<Func<TEntity, bool>> predicate);
 
+        Task<TEntity> SingleOrDefaultWithRelated(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes);
+
         void Add(TEntity entity);
 
         void AddRange(IEnumerable<TEntity> entities);

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Eventify.Core.Repositories;
+using Microsoft.EntityFrameworkCore;
+
 namespace Eventify.Persistence.Repositories
 {
     public class UserRepository : Repository<User>, IUserRepository
@@ -12,14 +14,17 @@ namespace Eventify.Persistence.Repositories
         {
         }
 
-        public User GetUserWithEvents(int id)
-        {
-            throw new NotImplementedException();
-        }
 
         public EventifyDbContext EventifyDbContext
         {
             get { return Context as EventifyDbContext; }
         }
+
+        //public async Task<User> GetUser(string username)
+        //{
+        //    var user = await EventifyDbContext.Users.Include(u => u.Followers).Include(u => u.Followings).FirstOrDefaultAsync(u => u.Username == username);
+
+        //    return user;
+        //}
     }
 }

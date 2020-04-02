@@ -8,6 +8,6 @@ namespace Eventify.Core.Repositories
 {
     public interface IUserRepository : IRepository<User>
     {
-        User GetUserWithEvents(int id);
+        //Task<User> GetUser(string username);
     }
 }

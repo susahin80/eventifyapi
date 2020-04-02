@@ -80,6 +80,17 @@ namespace Eventify.Persistence.Repositories
             return await _entities.SingleOrDefaultAsync(predicate);
         }
 
+        public async Task<TEntity> SingleOrDefaultWithRelated(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
+        {
+            var query = includes
+             .Aggregate(
+                 _entities.Where(predicate).AsQueryable(),
+                 (current, include) => current.Include(include)
+             );
+
+            return await query.SingleOrDefaultAsync(predicate);
+        }
+
         public void Add(TEntity entity)
         {
             _entities.Add(entity);
